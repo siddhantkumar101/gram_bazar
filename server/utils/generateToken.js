@@ -1,0 +1,14 @@
+const jwt = require("jsonwebtoken");
+
+/**
+ * Generates JWT access and refresh tokens.
+ * @param {string} userId - MongoDB user ID.
+ * @returns {{accessToken: string, refreshToken: string}}
+ */
+const generateTokens = (userId) => {
+  const accessToken = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: "1d" });
+  const refreshToken = jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET, { expiresIn: "7d" });
+  return { accessToken, refreshToken };
+};
+
+module.exports = generateTokens;

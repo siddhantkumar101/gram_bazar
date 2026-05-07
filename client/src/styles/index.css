@@ -1,0 +1,109 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: "Inter", "Noto Sans Devanagari", sans-serif;
+    background-color: #fff8f0;
+    color: #1f2937;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@layer components {
+  .tap-target {
+    min-height: 48px;
+    min-width: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-sm border border-orange-100;
+  }
+
+  .btn-primary {
+    @apply bg-saffron text-white font-semibold rounded-xl px-5 py-3 active:scale-95 transition-transform shadow-md;
+  }
+
+  .btn-secondary {
+    @apply bg-earth text-white font-semibold rounded-xl px-5 py-3 active:scale-95 transition-transform;
+  }
+
+  .btn-outline {
+    @apply border-2 border-saffron text-saffron font-semibold rounded-xl px-5 py-3 active:scale-95 transition-transform;
+  }
+
+  .input-field {
+    @apply w-full p-3.5 rounded-xl border border-orange-200 focus:outline-none focus:ring-2 focus:ring-saffron bg-white text-gray-800 placeholder-gray-400 transition-shadow;
+  }
+
+  .badge {
+    @apply text-xs font-semibold px-2.5 py-1 rounded-full;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, #FF6B35, #e65a2a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .bg-saffron-gradient {
+    background: linear-gradient(135deg, #FF6B35 0%, #e8500f 100%);
+  }
+
+  .shadow-saffron {
+    box-shadow: 0 4px 20px rgba(255, 107, 53, 0.25);
+  }
+
+  .shine {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shine::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 30%;
+    height: 200%;
+    background: rgba(255,255,255,0.25);
+    transform: skewX(-20deg);
+    animation: shine 3s infinite;
+  }
+
+  @keyframes shine {
+    0% { left: -60%; }
+    100% { left: 130%; }
+  }
+
+  .pulse-ring {
+    animation: pulse-ring 1.5s ease-out infinite;
+  }
+
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0.5); }
+    70% { box-shadow: 0 0 0 12px rgba(255, 107, 53, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 107, 53, 0); }
+  }
+}
+
+input, textarea, select {
+  background: #ffffff;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #fff8f0; }
+::-webkit-scrollbar-thumb { background: #FF6B35; border-radius: 4px; }
