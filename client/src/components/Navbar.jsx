@@ -14,7 +14,7 @@ const Navbar = () => {
       { to: "/sell", icon: "➕", label: "Sell" },
       { to: "/dashboard", icon: "📊", label: "Dashboard" }
     ] : []),
-    ...(isBuyer ? [
+    ...(user ? [
       { to: "/orders", icon: "📦", label: "My Orders" }
     ] : []),
   ];
