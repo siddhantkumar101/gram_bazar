@@ -2,11 +2,17 @@
 
 Hyperlocal rural marketplace monorepo for India.
 
-## Stack
-- Frontend: React 18 + Vite + Tailwind + React Router v6
-- Backend: Node.js + Express + MongoDB + Mongoose
-- Auth: JWT with httpOnly cookies
-- Realtime: Socket.io
+## 🚀 Tech Stack
+- **Frontend**: React.js, Tailwind CSS, Framer Motion
+- **Backend**: Node.js, Express.js
+- **Database**: MongoDB
+- **Voice Features**: Web Speech API for accessibility
+
+## 📦 Features
+- Voice-to-Text for easy listing creation
+- Real-time order tracking
+- Multilingual support (Hindi/English)
+- Buyer & Seller role separation
 
 ## Structure
 - `server` REST API
