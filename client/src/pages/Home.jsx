@@ -114,8 +114,6 @@ const Home = () => {
             </p>
             <button onClick={() => refetch()} className="mt-4 text-saffron font-bold underline">Refresh List</button>
           </div>
-        ) : (
-          <div className="col-span-full py-10 text-center text-gray-400">Something went wrong.</div>
         )}
       </div>
     </div>
