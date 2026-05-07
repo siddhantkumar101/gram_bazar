@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { listingApi } from "../api/services";
@@ -10,6 +11,7 @@ const CATEGORIES = ["Vegetables", "Grains", "Dairy", "Tools", "Services", "Anima
 const CAT_ICONS = { Vegetables: "🥦", Grains: "🌾", Dairy: "🥛", Tools: "🔧", Services: "⚡", Animals: "🐄", Clothes: "👗", Other: "📦" };
 
 const CreateListing = () => {
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [form, setForm] = useState({
@@ -43,6 +45,7 @@ const CreateListing = () => {
 
     try {
       await listingApi.create(payload);
+      queryClient.invalidateQueries(["listings"]);
       toast.success("Listing published! 🎉");
       navigate("/");
     } catch (error) {
@@ -240,11 +243,11 @@ const CreateListing = () => {
                 </p>
                 <div className="flex items-center gap-3 pt-4 border-t border-gray-100">
                   <div className="w-10 h-10 rounded-full bg-orange-100 flex items-center justify-center text-saffron font-bold">
-                    {user?.name?.[0]?.toUpperCase() || "U"}
+                    {user?.name ? user.name[0].toUpperCase() : "U"}
                   </div>
                   <div>
                     <p className="text-sm font-bold text-gray-900">{user?.name || "Seller Name"}</p>
-                    <p className="text-xs text-gray-500 font-medium">📍 Your Location</p>
+                    <p className="text-xs text-gray-500 font-medium">📍 {user?.location?.village || "Your Location"}</p>
                   </div>
                 </div>
               </div>

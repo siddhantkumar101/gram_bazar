@@ -27,13 +27,16 @@ app.use((req, res, next) => {
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || origin.startsWith("http://localhost:") || origin === process.env.CLIENT_URL) {
+      const allowedOrigins = [process.env.CLIENT_URL, "http://localhost:5173", "http://localhost:5174", "https://gram-bazar.vercel.app"];
+      if (!origin || allowedOrigins.includes(origin) || origin.includes("localhost") || origin.includes("127.0.0.1")) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
       }
     },
-    credentials: true
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"]
   })
 );
 app.use(express.json());

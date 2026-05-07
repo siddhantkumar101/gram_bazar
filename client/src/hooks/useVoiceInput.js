@@ -1,10 +1,11 @@
 import { useState, useRef, useCallback } from "react";
 
-const useVoiceInput = (lang = "hi-IN") => {
+const useVoiceInput = (lang = "hi-IN", onFinalResult) => {
   const [text, setText] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState("");
   const recognitionRef = useRef(null);
+  const textRef = useRef(""); // Keep track of latest text without triggering re-renders
 
   const startRecording = useCallback(() => {
     const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -15,16 +16,24 @@ const useVoiceInput = (lang = "hi-IN") => {
 
     setError("");
     setText("");
+    textRef.current = "";
 
     const recognition = new Recognition();
     recognition.lang = lang;
     recognition.interimResults = true;
     recognition.maxAlternatives = 1;
-    recognition.continuous = false; // continuous:true breaks on Android
+    recognition.continuous = false;
 
     recognition.onstart = () => setIsRecording(true);
     
-    recognition.onend = () => setIsRecording(false);
+    recognition.onend = () => {
+      setIsRecording(false);
+      if (onFinalResult && textRef.current) {
+        onFinalResult(textRef.current);
+        setText("");
+        textRef.current = "";
+      }
+    };
     
     recognition.onerror = (e) => {
       setIsRecording(false);
@@ -40,7 +49,9 @@ const useVoiceInput = (lang = "hi-IN") => {
         if (e.results[i].isFinal) finalStr += e.results[i][0].transcript;
         else interimStr += e.results[i][0].transcript;
       }
-      setText(finalStr || interimStr);
+      const currentText = finalStr || interimStr;
+      setText(currentText);
+      textRef.current = currentText;
     };
 
     recognitionRef.current = recognition;
@@ -49,13 +60,17 @@ const useVoiceInput = (lang = "hi-IN") => {
     } catch (err) {
       setError("Mic already in use.");
     }
-  }, [lang]);
+  }, [lang, onFinalResult]);
 
   const stopRecording = useCallback(() => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
-      setIsRecording(false);
     }
+  }, []);
+
+  const clearText = useCallback(() => {
+    setText("");
+    textRef.current = "";
   }, []);
 
   const toggleRecording = useCallback(() => {
@@ -63,7 +78,7 @@ const useVoiceInput = (lang = "hi-IN") => {
     else startRecording();
   }, [isRecording, startRecording, stopRecording]);
 
-  return { text, setText, isRecording, toggleRecording, error };
+  return { text, setText, clearText, isRecording, toggleRecording, error };
 };
 
 export default useVoiceInput;

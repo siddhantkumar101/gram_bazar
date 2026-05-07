@@ -12,9 +12,17 @@ const STATUS_FLOW = {
 const SellerDashboard = () => {
   const queryClient = useQueryClient();
   
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ["orders", "seller"],
-    queryFn: async () => (await orderApi.sellerOrders()).data.data.orders
+    queryFn: async () => {
+      try {
+        const res = await orderApi.sellerOrders();
+        return res.data.data.orders || [];
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+        return []; // Return empty array instead of crashing
+      }
+    }
   });
 
   const updateMutation = useMutation({
@@ -26,7 +34,19 @@ const SellerDashboard = () => {
     onError: () => toast.error("Failed to update status")
   });
 
-  if (isLoading) return <div className="p-8">Loading dashboard...</div>;
+  if (isLoading) return (
+    <div className="w-full max-w-7xl mx-auto px-4 pt-20 text-center">
+      <div className="w-12 h-12 border-4 border-saffron border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+      <p className="text-gray-500 font-bold">Loading your dashboard...</p>
+    </div>
+  );
+
+  if (isError) return (
+    <div className="w-full max-w-7xl mx-auto px-4 pt-20 text-center">
+      <div className="text-4xl mb-4">⚠️</div>
+      <p className="text-red-500 font-bold">Failed to load dashboard. Please try again.</p>
+    </div>
+  );
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-24 md:pb-8">

@@ -1,15 +1,25 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import useVoiceInput from "../hooks/useVoiceInput";
 
 const VoiceRecorder = ({ onText, lang = "hi-IN" }) => {
-  const { text, isRecording, toggleRecording, error } = useVoiceInput(lang);
-
-  useEffect(() => {
-    // Only pass final text up when recording stops to prevent textarea jumping
-    if (!isRecording && text) {
-      onText(text);
+  const isProcessedRef = useRef(false);
+  
+  const handleFinalResult = (finalText) => {
+    if (!isProcessedRef.current && finalText) {
+      onText(finalText);
+      isProcessedRef.current = true;
     }
-  }, [isRecording, text, onText]);
+  };
+
+  const { text, isRecording, toggleRecording, error } = useVoiceInput(lang, handleFinalResult);
+
+  // Reset the process lock whenever a new recording starts
+  useEffect(() => {
+    if (isRecording) {
+      isProcessedRef.current = false;
+    }
+  }, [isRecording]);
+
 
   return (
     <div className="flex flex-col items-end gap-2">

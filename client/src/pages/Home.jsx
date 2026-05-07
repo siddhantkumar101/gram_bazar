@@ -9,7 +9,7 @@ const CAT_ICONS = { "": "🌾", Vegetables: "🥦", Grains: "🌾", Dairy: "🥛
 const Home = () => {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
-  const { data, isLoading } = useListings({ search, category, page: 1, limit: 20 });
+  const { data, isLoading, isError, refetch } = useListings({ search, category, page: 1, limit: 20 });
   const { t } = useTranslation();
 
   return (
@@ -91,6 +91,18 @@ const Home = () => {
               </div>
             </div>
           ))
+        ) : isError ? (
+          <div className="col-span-full flex flex-col items-center justify-center py-20 bg-red-50 rounded-3xl border border-dashed border-red-200">
+            <div className="text-5xl mb-4">🚫</div>
+            <h3 className="text-2xl font-bold text-red-800">Connection Error</h3>
+            <p className="text-red-600 font-medium mt-2 mb-6">We couldn't connect to the server to get the listings.</p>
+            <button 
+              onClick={() => refetch()}
+              className="bg-saffron text-white px-8 py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-transform"
+            >
+              🔄 Try Again
+            </button>
+          </div>
         ) : data?.items?.length ? (
           data.items.map((item) => <ListingCard key={item._id} listing={item} />)
         ) : (
@@ -100,7 +112,10 @@ const Home = () => {
             <p className="text-gray-500 font-medium mt-2 max-w-md text-center">
               We couldn't find anything matching your search. Be the first to add something in this category!
             </p>
+            <button onClick={() => refetch()} className="mt-4 text-saffron font-bold underline">Refresh List</button>
           </div>
+        ) : (
+          <div className="col-span-full py-10 text-center text-gray-400">Something went wrong.</div>
         )}
       </div>
     </div>
