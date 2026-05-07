@@ -10,20 +10,20 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 
-let storage;
-
-// Force local storage for testing so you can see it in your 'uploads' folder
-storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, uploadDir);
+// Configure Cloudinary Storage for production
+const storage = new CloudinaryStorage({
+  cloudinary: cloudinary,
+  params: {
+    folder: "gram_bazaar_listings",
+    allowed_formats: ["jpg", "png", "jpeg", "webp"],
+    transformation: [{ width: 800, height: 600, crop: "limit" }]
   },
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    cb(null, uniqueSuffix + '-' + file.originalname);
-  }
 });
 
-const upload = multer({ storage });
+const upload = multer({ 
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+});
 
 module.exports = upload;
 //updates the things related to upload had a issue with coloudinary had to update in my local storage 
